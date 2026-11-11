@@ -1,1 +1,312 @@
 
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>تركيزي</title>
+<style>
+:root{--bg:linear-gradient(160deg,#F1EBDD,#E2EAD6);--card:#FBF8F1;--text:#2B3527;--soft:#6F7A66;--item:#F0EADB;--main:#4F7A4D;--onmain:#fff;--line:#DDD5C0;--danger:#C0504D;--gold:#C9A24B}
+body.dark{--bg:linear-gradient(160deg,#121C16,#1B2A20);--card:#1E2B23;--text:#E7EEE3;--soft:#9DB09C;--item:#2A3A2F;--main:#8DBB88;--onmain:#14231B;--line:#3A4D3F;--danger:#D2625F;--gold:#D9B45A}
+[hidden]{display:none!important}
+*{box-sizing:border-box}
+body{background:var(--bg) fixed;font-family:"Segoe UI",Tahoma,Arial,sans-serif;text-align:center;margin:0;padding:16px;min-height:100vh;color:var(--text)}
+.box{background:var(--card);max-width:420px;margin:10px auto;padding:22px;border-radius:25px;box-shadow:0 10px 30px rgba(43,53,39,.18)}
+h1{color:var(--main);margin:0;font-size:26px}
+p{color:var(--soft)}
+label{display:block;text-align:right;color:var(--soft);font-size:14px;margin-top:10px}
+.top{display:flex;justify-content:space-between;align-items:center}
+#themeBtn{background:none;border:none;font-size:26px;cursor:pointer}
+input,select{width:100%;padding:12px;margin:6px 0;border:2px solid var(--line);border-radius:14px;font-size:16px;background:var(--item);color:var(--text);font-family:inherit}
+input[type=range]{padding:0;border:none;background:none;accent-color:var(--main)}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+.main-btn,.softBtn{width:100%;padding:13px;margin-top:8px;border-radius:14px;font-size:17px;font-weight:bold;cursor:pointer;font-family:inherit}
+.main-btn{border:none;color:var(--onmain);background:var(--main)}
+.softBtn{border:2px solid var(--main);background:none;color:var(--main);font-size:15px}
+.tabs{display:flex;gap:6px;margin:12px 0}
+.tabBtn{flex:1;padding:10px 2px;border:none;border-radius:12px;background:var(--item);color:var(--text);font-size:14px;cursor:pointer;font-family:inherit}
+.tabBtn.active{background:var(--main);color:var(--onmain)}
+.progress{height:12px;background:var(--item);border-radius:10px;overflow:hidden;margin-top:10px}
+.fill{height:100%;width:0;background:var(--main);transition:width .4s}
+ul{list-style:none;padding:0}
+li{background:var(--item);border-right:5px solid var(--main);margin:10px 0;padding:14px;border-radius:14px;text-align:right}
+li b{font-size:17px}
+li span{display:block;color:var(--soft);font-size:13px;margin:4px 0 8px}
+li button{border:none;color:#fff;padding:8px 12px;border-radius:10px;font-size:14px;cursor:pointer;background:var(--danger);margin-left:6px;font-family:inherit}
+li .go{background:#4F7A4D}
+li.p0{border-right-color:var(--danger)}
+li.today{box-shadow:0 0 10px rgba(201,162,75,.5)}
+li.done{opacity:.65}li.done b{text-decoration:line-through}
+li.empty{text-align:center;color:var(--soft);border-right-color:transparent}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.stat{background:var(--item);border-radius:14px;padding:12px 4px}
+.stat b{display:block;font-size:24px;color:var(--main)}
+.stat small{color:var(--soft)}
+.sBtn{padding:14px 4px;border:2px solid var(--line);border-radius:14px;background:var(--item);color:var(--text);font-size:16px;cursor:pointer;font-family:inherit}
+.sBtn.active{border-color:var(--main);background:var(--main);color:var(--onmain)}
+.pr{display:flex;justify-content:space-between;background:var(--item);padding:11px 14px;border-radius:12px;margin:6px 0}
+.pr.next{outline:2px solid var(--gold)}
+.lock{position:fixed;inset:0;z-index:9;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px}
+.lock>*{max-width:340px;width:100%}
+#clock{font-size:76px;font-weight:bold;color:var(--main);font-variant-numeric:tabular-nums;direction:ltr}
+#phase{font-size:22px;color:var(--text)}
+#tabs{flex-wrap:wrap}#tabs .tabBtn{flex:1 1 28%}
+.pr{gap:10px;text-align:right}
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--main);color:var(--onmain);padding:12px 20px;border-radius:30px;font-weight:bold;z-index:20;box-shadow:0 6px 20px rgba(0,0,0,.3);max-width:90%}
+.stat.lk{opacity:.35}
+</style>
+</head>
+<body>
+<div class="box">
+ <div class="top"><h1>🌿 تركيزي</h1><b id="gemTop" style="color:var(--gold)">💎 0</b><button id="themeBtn" aria-label="تغيير الوضع">🌙</button></div>
+ <div class="tabs" id="tabs">
+  <button class="tabBtn active" data-p="tasks">المهام</button>
+  <button class="tabBtn" data-p="focus">التركيز</button>
+  <button class="tabBtn" data-p="sched">الجدول</button>
+  <button class="tabBtn" data-p="sounds">الأصوات</button>
+  <button class="tabBtn" data-p="gems">الجوائز</button>
+  <button class="tabBtn" data-p="more">المزيد</button>
+ </div>
+
+ <section id="tasks">
+  <input id="tName" placeholder="اسم المهمة" maxlength="60">
+  <select id="tCat"><option value="📚 مذاكرة">📚 مذاكرة</option><option value="🎮 ترفيه">🎮 ترفيه</option><option value="🏃 رياضة">🏃 رياضة</option><option value="✨ أخرى">✨ أخرى</option></select>
+  <select id="tPri"><option value="0">أولوية عالية</option><option value="1" selected>أولوية متوسطة</option><option value="2">أولوية عادية</option></select>
+  <label for="tDue">تاريخ التسليم (اختياري)</label>
+  <input id="tDue" type="date">
+  <button class="main-btn" id="addBtn">أضف المهمة</button>
+  <div class="progress"><div class="fill" id="bar"></div></div><p id="pTxt"></p>
+  <div class="tabs"><button class="tabBtn active" data-f="rem">المتبقية</button><button class="tabBtn" data-f="done">المنتهية</button></div>
+  <ul id="list"></ul>
+  <button class="softBtn" id="clearDone">مسح المنتهية</button>
+ </section>
+
+ <section id="focus" hidden>
+  <label>مدة التركيز: <b id="fv">25</b> دقيقة</label>
+  <input type="range" id="fr" min="5" max="60" step="5" value="25">
+  <label>مدة الراحة: <b id="bv">5</b> دقيقة</label>
+  <input type="range" id="br" min="5" max="15" step="5" value="5">
+  <button class="main-btn" id="startFocus">ابدأ التركيز 🎯</button>
+  <p>الشاشة هتتقفل على العدّاد، ولما الوقت يخلص المنبه هيرن لحد ما تدوس "خلصت".</p>
+ </section>
+
+ <section id="sched" hidden>
+  <label for="schSel">اختار جدول أو روتين</label>
+  <select id="schSel"></select>
+  <p id="schD"></p>
+  <div id="schR"></div>
+  <button class="main-btn" id="schSave">اعتمد الجدول ده</button>
+  <p id="schMine"></p>
+  <p>المواد مكتوبة بشكل عام (عربي، إنجليزي، رياضيات، علوم، دراسات، لغة ثانية). عدّلها حسب مواد مدرستك.</p>
+ </section>
+
+ <section id="sounds" hidden>
+  <p>اختار صوت يشتغل وأنت بتذاكر:</p>
+  <div class="grid" style="grid-template-columns:1fr 1fr">
+   <button class="sBtn" data-s="rain">🌧️ مطر</button>
+   <button class="sBtn" data-s="piano">🎹 بيانو هادي</button>
+   <button class="sBtn" data-s="forest">🌲 طبيعة</button>
+   <button class="sBtn" data-s="cafe">☕ كافيه</button>
+  </div>
+  <label>مستوى الصوت</label>
+  <input type="range" id="vol" min="0" max="100" value="40">
+  <button class="softBtn" id="stopSnd">إيقاف الصوت</button>
+  <p id="sndNote" hidden>الملف مش موجود. حط ملفات MP3 في فولدر اسمه sounds بنفس الأسماء: rain و piano و forest و cafe.</p>
+ </section>
+
+ <section id="gems" hidden>
+  <div class="stat"><b id="gN">0</b><small>💎 ألماسة</small></div>
+  <p id="lvl"></p>
+  <div class="progress"><div class="fill" id="bar3"></div></div>
+  <h3>الأوسمة</h3>
+  <div class="grid" id="badges"></div>
+  <p>تكسب ألماس من كل مهمة تخلصها (3 لـ 10 حسب الأولوية)، ومن كل 5 دقايق تركيز (ألماسة)، ومن كل وسام جديد (10).</p>
+ </section>
+
+ <section id="more" hidden>
+  <div class="grid">
+   <div class="stat"><b id="sT">0</b><small>مهام اليوم</small></div>
+   <div class="stat"><b id="sF">0</b><small>دقيقة تركيز</small></div>
+   <div class="stat"><b id="sS">0</b><small>🔥 أيام متتالية</small></div>
+  </div>
+  <label>هدف التركيز اليومي (دقيقة)</label>
+  <input type="number" id="goal" min="10" step="10">
+  <div class="progress"><div class="fill" id="bar2"></div></div>
+  <h3>📖 الورد اليومي</h3>
+  <p>قرأت النهارده: <b id="wN">0</b> صفحة</p>
+  <div class="grid" style="grid-template-columns:1fr 1fr"><button class="softBtn" id="wMinus">−</button><button class="main-btn" id="wPlus" style="margin-top:8px">+ صفحة</button></div>
+  <h3>🕌 مواقيت الصلاة (الإسكندرية)</h3>
+  <div id="pray"><p>جاري التحميل...</p></div>
+ </section>
+</div>
+
+<div class="toast" id="toast" hidden></div>
+<div class="lock" id="lock" hidden>
+ <p id="phase"></p><div id="clock">00:00</div><p id="msg"></p>
+ <button class="main-btn" id="alarmOff" hidden>خلصت ✅</button>
+ <button class="softBtn" id="giveUp">استسلم</button>
+ <div id="keep" hidden><p>كمّل، فاضل لك شوية! 💪</p><button class="main-btn" id="keepBtn">أكمّل</button><button class="softBtn" id="quitBtn">أستسلم فعلًا</button></div>
+</div>
+
+<script>
+const $=id=>document.getElementById(id);
+const esc=s=>s.replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const pad=n=>String(n).padStart(2,'0');
+const today=()=>new Date().toLocaleDateString('en-CA');
+let S={tasks:[],days:{},dark:false,goal:120,pray:null};
+try{S=Object.assign(S,JSON.parse(localStorage.getItem('tarkeezy')||'{}'))}catch(e){}
+const save=()=>{try{localStorage.setItem('tarkeezy',JSON.stringify(S))}catch(e){}};
+const day=()=>S.days[today()]||(S.days[today()]={f:0,t:0,w:0});
+
+/* tabs */
+$('tabs').onclick=e=>{const p=e.target.dataset.p;if(!p)return;
+ document.querySelectorAll('#tabs .tabBtn').forEach(b=>b.classList.toggle('active',b===e.target));
+ ['tasks','focus','sched','sounds','gems','more'].forEach(id=>$(id).hidden=id!==p);
+ if(p==='more')renderMore();if(p==='gems')renderGems();if(p==='sched')renderSch();};
+
+/* theme */
+function theme(){document.body.classList.toggle('dark',S.dark);$('themeBtn').textContent=S.dark?'☀️':'🌙'}
+$('themeBtn').onclick=()=>{S.dark=!S.dark;theme();save()};
+
+/* tasks */
+let filter='rem';
+$('addBtn').onclick=()=>{const n=$('tName').value.trim();if(!n){$('tName').focus();return}
+ S.tasks.push({id:Date.now(),n,c:$('tCat').value,p:+$('tPri').value,due:$('tDue').value,started:false,done:false});
+ $('tName').value='';$('tDue').value='';save();render()};
+$('tName').onkeydown=e=>{if(e.key==='Enter')$('addBtn').click()};
+document.querySelectorAll('[data-f]').forEach(b=>b.onclick=()=>{filter=b.dataset.f;
+ document.querySelectorAll('[data-f]').forEach(x=>x.classList.toggle('active',x===b));render()});
+$('clearDone').onclick=()=>{S.tasks=S.tasks.filter(t=>!t.done);save();render()};
+$('list').onclick=e=>{const b=e.target.closest('button');if(!b)return;
+ const t=S.tasks.find(x=>x.id==b.dataset.id);if(!t)return;
+ if(b.dataset.a==='go')t.started=true;
+ if(b.dataset.a==='ok'){t.done=true;t.started=false;day().t++;gain([10,5,3][t.p],cheer());checkBadges()}
+ if(b.dataset.a==='del')S.tasks=S.tasks.filter(x=>x!==t);
+ save();render()};
+function render(){
+ const L=$('list');L.textContent='';
+ const arr=S.tasks.filter(t=>filter==='done'?t.done:!t.done).sort((a,b)=>a.p-b.p||(a.due||'9').localeCompare(b.due||'9'));
+ if(!arr.length)L.innerHTML='<li class="empty">'+(filter==='done'?'مفيش مهام منتهية لسه':'مفيش مهام، أضف أول مهمة 👆')+'</li>';
+ arr.forEach(t=>{const li=document.createElement('li');
+  li.className='p'+t.p+(t.done?' done':'')+(t.due===today()&&!t.done?' today':'');
+  const late=t.due&&t.due<today()&&!t.done?' • متأخرة ⚠️':'';
+  li.innerHTML='<b>'+esc(t.n)+'</b><span>'+t.c+(t.due?' • '+t.due:'')+late+(t.started&&!t.done?' • ⏳ شغّالة':'')+'</span>'+
+   (t.done?'':(t.started?'':'<button class="go" data-a="go" data-id="'+t.id+'">ابدأ</button>')+'<button class="go" data-a="ok" data-id="'+t.id+'">خلصتها</button>')+
+   '<button data-a="del" data-id="'+t.id+'">مسح</button>';
+  L.appendChild(li)});
+ const d=S.tasks.filter(t=>t.done).length,all=S.tasks.length;
+ $('bar').style.width=(all?d/all*100:0)+'%';
+ $('pTxt').textContent=all?'خلصت '+d+' من '+all:'';
+}
+
+/* audio */
+let AC;const ac=()=>AC||(AC=new(window.AudioContext||window.webkitAudioContext)());
+function beep(){const c=ac(),o=c.createOscillator(),g=c.createGain();o.type='square';o.frequency.value=880;
+ g.gain.setValueAtTime(.6,c.currentTime);g.gain.exponentialRampToValueAtTime(.001,c.currentTime+.5);
+ o.connect(g);g.connect(c.destination);o.start();o.stop(c.currentTime+.5)}
+function ring(){const r=run,a=new Audio('sounds/alarm.mp3');a.loop=true;r.a=a;
+ a.onerror=()=>{if(run===r&&!r.alarm){beep();r.alarm=setInterval(beep,900)}};a.play().catch(()=>{})}
+let snd=null;
+function stopSnd(){if(snd){snd.pause();snd=null}document.querySelectorAll('.sBtn').forEach(b=>b.classList.remove('active'))}
+function playSnd(k){stopSnd();$('sndNote').hidden=true;
+ const a=new Audio('sounds/'+k+'.mp3');a.loop=true;a.volume=$('vol').value/100;
+ a.onerror=()=>{$('sndNote').hidden=false;stopSnd()};a.play().catch(()=>{});snd=a;
+ document.querySelector('[data-s="'+k+'"]').classList.add('active')}
+document.querySelectorAll('.sBtn').forEach(b=>b.onclick=()=>b.classList.contains('active')?stopSnd():playSnd(b.dataset.s));
+$('stopSnd').onclick=stopSnd;
+$('vol').oninput=()=>{if(snd)snd.volume=$('vol').value/100};
+
+/* focus mode */
+let run=null;
+$('fr').oninput=()=>$('fv').textContent=$('fr').value;
+$('br').oninput=()=>$('bv').textContent=$('br').value;
+$('startFocus').onclick=()=>startPhase('focus');
+function startPhase(ph){const m=+$(ph==='focus'?'fr':'br').value;
+ run={ph,total:m,end:Date.now()+m*60000};ac().resume();
+ $('lock').hidden=false;try{document.documentElement.requestFullscreen()}catch(e){}
+ $('phase').textContent=ph==='focus'?'🎯 وقت التركيز':'☕ وقت الراحة';
+ $('msg').textContent='';$('alarmOff').hidden=true;$('giveUp').hidden=ph!=='focus';$('keep').hidden=true;
+ tick();run.t=setInterval(tick,500)}
+function tick(){const left=run.end-Date.now();if(left<=0)return finish();
+ const s=Math.ceil(left/1000);$('clock').textContent=pad(s/60|0)+':'+pad(s%60);document.title=$('clock').textContent+' تركيزي'}
+function finish(){clearInterval(run.t);
+ if(run.ph==='focus'){day().f+=run.total;save();gain(Math.round(run.total/5),'تركيز ممتاز 🎯');checkBadges()}
+ $('clock').textContent='00:00';$('phase').textContent='⏰ الوقت خلص!';
+ $('alarmOff').textContent=run.ph==='focus'?'خلصت ✅ ابدأ الراحة':'خلصت ✅';
+ $('alarmOff').hidden=false;$('giveUp').hidden=true;$('keep').hidden=true;
+ ring()}
+$('alarmOff').onclick=()=>{clearInterval(run.alarm);if(run.a)run.a.pause();const was=run.ph;run=null;was==='focus'?startPhase('break'):closeLock()};
+$('giveUp').onclick=()=>{$('giveUp').hidden=true;$('keep').hidden=false};
+$('keepBtn').onclick=()=>{$('keep').hidden=true;$('giveUp').hidden=false};
+$('quitBtn').onclick=()=>{clearInterval(run.t);run=null;closeLock()};
+function closeLock(){$('lock').hidden=true;document.title='تركيزي';try{if(document.fullscreenElement)document.exitFullscreen()}catch(e){}}
+document.addEventListener('visibilitychange',()=>{if(!document.hidden&&run&&run.ph==='focus'&&Date.now()<run.end)$('msg').textContent='⚠️ خرجت من الصفحة! ارجع للتركيز.'});
+window.addEventListener('beforeunload',e=>{if(run&&Date.now()<run.end){e.preventDefault();e.returnValue=''}});
+
+/* stats, reading counter */
+function renderMore(){const d=day();$('sT').textContent=d.t;$('sF').textContent=d.f;$('wN').textContent=d.w||0;
+ $('sS').textContent=streak();$('goal').value=S.goal;$('bar2').style.width=Math.min(100,d.f/S.goal*100)+'%'}
+$('goal').onchange=()=>{S.goal=Math.max(10,+$('goal').value||120);save();renderMore()};
+$('wPlus').onclick=()=>{const d=day();d.w=(d.w||0)+1;save();renderMore()};
+$('wMinus').onclick=()=>{const d=day();d.w=Math.max(0,(d.w||0)-1);save();renderMore()};
+
+/* prayer times */
+const PN={Fajr:'الفجر',Dhuhr:'الظهر',Asr:'العصر',Maghrib:'المغرب',Isha:'العشاء'};
+async function loadPray(){
+ if(!S.pray||S.pray.d!==today()){
+  try{const r=await fetch('https://api.aladhan.com/v1/timingsByCity?city=Alexandria&country=Egypt&method=5');
+   const j=await r.json();S.pray={d:today(),t:j.data.timings};save()}catch(e){}}
+ const box=$('pray');
+ if(!S.pray){box.innerHTML='<p>مقدرتش أحمّل المواقيت. تأكد من الإنترنت.</p>';return}
+ const now=new Date().getHours()*60+new Date().getMinutes();
+ const ks=Object.keys(PN),mins=ks.map(k=>{const[h,m]=S.pray.t[k].split(':');return +h*60+ +m});
+ let nx=mins.findIndex(m=>m>now);if(nx<0)nx=0;
+ box.innerHTML=ks.map((k,i)=>{const[h,m]=S.pray.t[k].split(':');
+  return '<div class="pr'+(i===nx?' next':'')+'"><span>'+PN[k]+'</span><b>'+((+h%12)||12)+':'+m+' '+(+h>=12?'م':'ص')+'</b></div>'}).join('')}
+
+/* rewards */
+function streak(){let s=0,dt=new Date();const act=x=>{const v=S.days[x.toLocaleDateString('en-CA')];return v&&(v.f>0||v.t>0)};
+ if(!act(dt))dt.setDate(dt.getDate()-1);while(act(dt)){s++;dt.setDate(dt.getDate()-1)}return s}
+const T=()=>{let t=0,f=0;for(const k in S.days){t+=S.days[k].t||0;f+=S.days[k].f||0}return{t,f}};
+const BG=[['first','🌱','أول مهمة',()=>T().t>=1],['t10','🏅','10 مهام',()=>T().t>=10],['t50','🏆','50 مهمة',()=>T().t>=50],
+ ['f60','⏱️','ساعة تركيز',()=>T().f>=60],['f300','🔥','5 ساعات تركيز',()=>T().f>=300],['f1000','🚀','1000 دقيقة',()=>T().f>=1000],
+ ['s3','📅','3 أيام متتالية',()=>streak()>=3],['s7','👑','أسبوع متواصل',()=>streak()>=7],['goal','🎯','هدف اليوم',()=>day().f>=S.goal]];
+const LV=['مبتدئ','مجتهد','متميز','محترف','بطل','أسطورة'];
+const cheer=()=>['برافو يا بطل!','كمّل كده!','إنجاز حلو 👏','أنت ماشي صح!'][Math.random()*4|0];
+let tt;
+function toast(m){const e=$('toast');e.textContent=m;e.hidden=false;clearTimeout(tt);tt=setTimeout(()=>e.hidden=true,2800)}
+function gain(n,why){S.gems=(S.gems||0)+n;S.badges=S.badges||{};save();toast('💎 +'+n+' '+why);updateGems()}
+function checkBadges(){S.badges=S.badges||{};BG.forEach(b=>{if(!S.badges[b[0]]&&b[3]()){S.badges[b[0]]=1;gain(10,'وسام جديد: '+b[2]+' '+b[1])}})}
+function updateGems(){$('gemTop').textContent='💎 '+(S.gems||0);if(!$('gems').hidden)renderGems()}
+function renderGems(){const g=S.gems||0,l=Math.floor(g/50);$('gN').textContent=g;
+ $('lvl').textContent='المستوى '+(l+1)+': '+LV[Math.min(l,LV.length-1)]+' (باقي '+(50-g%50)+' لحد المستوى الجاي)';
+ $('bar3').style.width=(g%50)*2+'%';
+ $('badges').innerHTML=BG.map(b=>'<div class="stat'+((S.badges||{})[b[0]]?'':' lk')+'"><b>'+b[1]+'</b><small>'+b[2]+'</small></div>').join('')}
+
+/* schedules */
+const DN=['الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];
+const W=a=>a.map((x,i)=>[DN[i],x]);
+const SC={
+ w1:{g:'📅 جداول المذاكرة',n:'الجدول المتوازن',d:'مادتين كل يوم، حوالي 3 ساعات مع راحات. مناسب لأغلب الأسابيع.',r:W(['عربي + رياضيات','إنجليزي + علوم','رياضيات + دراسات','عربي + لغة ثانية','علوم + إنجليزي','مراجعة الأسبوع + راحة','حل أسئلة + تخطيط الأسبوع'])},
+ w2:{g:'📅 جداول المذاكرة',n:'الجدول الخفيف',d:'مادة واحدة كل يوم، ساعتين تقريبًا. للأسابيع المزدحمة.',r:W(['رياضيات','عربي','علوم','إنجليزي','دراسات','راحة','مراجعة سريعة لأصعب مادة'])},
+ w3:{g:'📅 جداول المذاكرة',n:'جدول التأسيس',d:'لو عايز تقوّي مستواك من الأول: مادة كل يوم بالتفصيل (2 لـ 3 ساعات).',r:W(['رياضيات: شرح + تمارين','علوم: شرح + ملخص','عربي: نحو وقراءة','إنجليزي: قواعد + مفردات','دراسات: شرح + ملخص','لغة ثانية: أساسيات','مراجعة نقاط ضعفك'])},
+ w4:{g:'📅 جداول المذاكرة',n:'جدول الامتحانات',d:'3 مواد كل يوم قبل الامتحانات بأسبوعين، مع حل نماذج.',r:W(['رياضيات + علوم + نموذج','عربي + إنجليزي + نموذج','دراسات + لغة ثانية + نموذج','رياضيات + علوم + نموذج','عربي + إنجليزي + نموذج','نموذج امتحان كامل بالوقت','راحة + مراجعة الملخصات'])},
+ r1:{g:'⏰ الروتين اليومي',n:'روتين يوم الدراسة',d:'يوم متوازن بعد المدرسة: مذاكرة وراحة ورياضة ونوم كفاية.',r:[['2:30 م','غدا وراحة'],['4:00 م','مذاكرة 50 د + راحة 10 د'],['5:30 م','مذاكرة تانية 50 د'],['7:00 م','رياضة أو مشي'],['8:00 م','عشا ووقت مع الأسرة'],['9:00 م','مراجعة سريعة وحل أسئلة'],['10:30 م','تجهيز الشنطة والنوم']]},
+ r2:{g:'⏰ الروتين اليومي',n:'روتين الإجازة',d:'للجمعة والسبت: مذاكرة بدري وباقي اليوم ليك.',r:[['8:00 ص','نوم كفاية وفطار'],['9:30 ص','جلسة للمادة الأصعب'],['11:30 ص','راحة ونشاط'],['1:00 م','غدا'],['4:00 م','جلسة مراجعة'],['6:00 م','هواية أو أصحاب'],['10:30 م','نوم']]},
+ r3:{g:'⏰ الروتين اليومي',n:'روتين أسبوع الامتحانات',d:'يوم مركّز: مراجعة بالصبح ونماذج بالعصر ونوم بدري.',r:[['6:00 ص','قيام ومراجعة سريعة'],['9:00 ص','مذاكرة مادة الامتحان الجاي'],['1:00 م','غدا وقيلولة 20 د'],['3:00 م','نماذج وأسئلة'],['7:00 م','مشي وهواء'],['9:00 م','ملخص سريع'],['10:00 م','نوم بدري']]}
+};
+function renderSch(){const sel=$('schSel');
+ if(!sel.options.length){const gs={};Object.keys(SC).forEach(k=>(gs[SC[k].g]=gs[SC[k].g]||[]).push(k));
+  for(const g in gs){const og=document.createElement('optgroup');og.label=g;gs[g].forEach(k=>og.appendChild(new Option(SC[k].n,k)));sel.appendChild(og)}
+  sel.value=S.sched||'w1'}
+ const s=SC[sel.value],td=DN[new Date().getDay()];
+ $('schD').textContent=s.d;
+ $('schR').innerHTML=s.r.map(r=>'<div class="pr'+(r[0]===td?' next':'')+'"><b>'+r[0]+'</b><span>'+r[1]+'</span></div>').join('');
+ $('schMine').textContent=S.sched?'جدولك الحالي: '+SC[S.sched].n:''}
+$('schSel').onchange=renderSch;
+$('schSave').onclick=()=>{const first=!S.sched;S.sched=$('schSel').value;save();if(first)gain(5,'اخترت جدولك');renderSch()};
+
+theme();render();updateGems();loadPray();
+</script>
+</body>
+</html>
